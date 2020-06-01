@@ -11,6 +11,7 @@ import com.naqing.wqa_android_ui_1.fragment_monitor_main;
 import java.util.Date;
 import nahon.comm.event.Event;
 import nahon.comm.event.EventListener;
+import wqa.bill.log.DevLog;
 import wqa.control.common.DevControl;
 import wqa.control.common.SDisplayData;
 import wqa.system.WQAPlatform;
@@ -43,6 +44,9 @@ public class model_dev_view {
             }
         });
         dev_holder.initState(control.GetState(), "");
+        for (model_monitor_holder holder : monitors) {
+            holder.initState(control.GetState());
+        }
 
 
         /** 注册数据采集事件*/
@@ -58,7 +62,10 @@ public class model_dev_view {
     }
 
     public void Close() {
+        /**删除报警信息*/
         WQAPlatform.GetInstance().GetDBHelperFactory().GetAlarmDB().DeleteAlarm(control.GetDevID(), new Date());
+        /**删除定标信息*/
+        DevLog.Instance().DelFile(control.GetDevID());
         devHolderAdapter.DelControl(dev_holder);
         for (model_monitor_holder monitor : monitors) {
             monitorHolderAdapter.DelDevice(monitor);
@@ -74,6 +81,9 @@ public class model_dev_view {
             if (msg.what == STATE) {
                 Event<DevControl.ControlState> event = (Event<DevControl.ControlState>) msg.obj;
                 dev_holder.initState(event.GetEvent(), event.Info().toString());
+                for (model_monitor_holder holder : monitors) {
+                    holder.initState(event.GetEvent());
+                }
             }
 
             if (msg.what == DATA) {

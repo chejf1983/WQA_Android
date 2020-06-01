@@ -1,6 +1,7 @@
 package com.naqing.dev_views;
 
 import android.app.Activity;
+import android.graphics.Color;
 import android.os.Handler;
 import android.os.Message;
 import android.view.LayoutInflater;
@@ -10,6 +11,7 @@ import android.widget.TextView;
 import com.naqing.common.Security;
 import com.naqing.wqa_android_ui_1.R;
 
+import wqa.control.common.DevControl;
 import wqa.control.common.SDisplayData;
 import wqa.dev.data.SDataElement;
 
@@ -78,4 +80,24 @@ public class model_monitor_holder {
     }
     // </editor-fold>
 
+    public void initState(DevControl.ControlState state) {
+        switch (state) {
+            case CONNECT:
+                config.setEnabled(true);
+                md_name.setTextColor(Color.WHITE);
+                break;
+            case ALARM:
+                config.setEnabled(true);
+                md_name.setTextColor(Color.YELLOW);
+                break;
+            case DISCONNECT:
+                config.setEnabled(false);
+                md_name.setTextColor(Color.RED);
+                break;
+            case CONFIG:
+                config.setEnabled(false);
+                md_name.setTextColor(Color.GREEN);
+                break;
+        }
+    }
 }

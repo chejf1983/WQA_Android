@@ -1,10 +1,14 @@
 package com.naqing.dev_views;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 
+import android.content.Context;
 import android.os.Bundle;
+import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.CompoundButton;
@@ -66,6 +70,12 @@ public class activity_dev_config extends AppCompatActivity {
         });
     }
 
+    @Nullable
+    @Override
+    public View onCreateView(@NonNull String name, @NonNull Context context, @NonNull AttributeSet attrs) {
+        return super.onCreateView(name, context, attrs);
+    }
+
     // <editor-fold desc="初始化">
     /**初始化fragement界面*/
     private void initView() {
@@ -86,6 +96,9 @@ public class activity_dev_config extends AppCompatActivity {
 
         /** 创建报警信息界面*/
         initAlarm(dev_view);
+
+        /** 创建报警信息界面*/
+        initCal(dev_view);
 
         /** 创建显示控制界面*/
         initViewSet(dev_view);
@@ -159,6 +172,26 @@ public class activity_dev_config extends AppCompatActivity {
         RadioButton button = initButton("报警信息");
         fragment_dev_alarm table = new fragment_dev_alarm(config);
         fragments.add(table);
+//        table.ReadAlarm();
+        button.setOnCheckedChangeListener((CompoundButton var1, boolean checked)->{
+            FragmentTransaction fragmentTransaction = activity_dev_config.this.getSupportFragmentManager().beginTransaction();
+            if(checked) {
+                table.reset_calconfig(config);
+                fragmentTransaction.replace(R.id.fragment_dev_config_area, table).commit();
+            }
+        });
+    }
+
+    /**初始化定标界面*/
+    private void initCal(model_dev_view config){
+        if(config == null){
+            return;
+        }
+
+        RadioButton button = initButton("定标信息");
+        fragment_dev_cal table = new fragment_dev_cal(config);
+        fragments.add(table);
+//        table.ReadAlarm();
         button.setOnCheckedChangeListener((CompoundButton var1, boolean checked)->{
             FragmentTransaction fragmentTransaction = activity_dev_config.this.getSupportFragmentManager().beginTransaction();
             if(checked) {

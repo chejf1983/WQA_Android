@@ -27,8 +27,7 @@
                 android:gravity="left|center"
                 android:paddingLeft="20dp"
                 android:includeFontPadding="true"
-                android:text="DSA-01"
-                android:textSize="20dp" />
+                android:text="DSA-01" />
 
             <TextView
                 android:id="@+id/dev_config_quit"

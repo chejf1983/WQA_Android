@@ -35,7 +35,7 @@
 
 
     <style name="common_button_style">
-        <item name="android:textSize">20dp</item>
+        <item name="android:textSize">22dp</item>
         <item name="android:gravity">center|center_vertical</item>
         <item name="android:background">@drawable/common_button</item>
         <item name="android:paddingBottom">10dp</item>
@@ -43,14 +43,14 @@
     </style>
 
     <style name="common_input_text">
-        <item name="android:textSize">20dp</item>
+        <item name="android:textSize">22dp</item>
         <item name="android:textColor">#FFFFFF</item>
         <item name="android:gravity">center|center_vertical</item>
         <item name="android:background">@drawable/common_button_1</item>
     </style>
 
     <style name="common_text">
-        <item name="android:textSize">20dp</item>
+        <item name="android:textSize">22dp</item>
         <item name="android:textColor">#FFFFFF</item>
         <item name="android:gravity">center|center_vertical</item>
     </style>
@@ -76,7 +76,7 @@
         <item name="android:paddingLeft">10dp</item>
         <item name="android:paddingRight">10dp</item>
         <item name="android:paddingBottom">10dp</item>
-        <item name="android:textSize">20dp</item>
+        <item name="android:textSize">22dp</item>
         <item name="android:layout_height">0dp</item>
         <item name="android:layout_width">match_parent</item>
         <item name="android:background">@drawable/config_button_bak</item>
