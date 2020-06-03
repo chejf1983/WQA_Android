@@ -24,6 +24,8 @@ import com.naqing.wqa_android_ui_1.R;
 import java.util.ArrayList;
 import java.util.concurrent.Future;
 
+import migp.adapter.factory.MIGPDevFactory;
+import wqa.adapter.factory.ModBusDevFactory;
 import wqa.bill.io.ShareIO;
 import wqa.control.data.IMainProcess;
 import wqa.system.WQAPlatform;
@@ -98,7 +100,7 @@ public class fragment_control_dev extends Fragment {
         mProgressDialog = NQProcessDialog2.ShowProcessDialog(parent, "搜索设备...");
 
         Future<?> submit = WQAPlatform.GetInstance().GetThreadPool().submit(() -> {
-            WQAPlatform.GetInstance().GetManager().SearchDevice(new ShareIO[]{AndroidIO.GetInstance().GetDevIO().GetDevConfigIO()}, new IMainProcess<Boolean>() {
+            WQAPlatform.GetInstance().GetManager().SearchDevice(new MIGPDevFactory(), new ShareIO[]{AndroidIO.GetInstance().GetDevIO().GetDevConfigIO()}, new IMainProcess<Boolean>() {
                 @Override
                 public void SetValue(float pecent) {
                     mProgressDialog.SetPecent((int) pecent + 10);

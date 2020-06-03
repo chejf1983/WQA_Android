@@ -1,8 +1,21 @@
 package com.naqing.io;
 
+import nahon.comm.event.Event;
+import nahon.comm.event.EventListener;
+import wqa.system.WQAPlatform;
+
 public class AndroidIO {
     private static AndroidIO instance;
 
+    private AndroidIO(){
+//        WQAPlatform.GetInstance().GetIOManager()
+        WQAPlatform.GetInstance().GetIOManager().SendReceive.RegeditListener(new EventListener<String>() {
+            @Override
+            public void recevieEvent(Event<String> event) {
+                System.out.println(event.GetEvent());
+            }
+        });
+    }
     public static AndroidIO GetInstance() {
         if (instance == null) {
             instance = new AndroidIO();

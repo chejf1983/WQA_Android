@@ -12,6 +12,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import androidx.fragment.app.Fragment;
 
+import com.naqing.common.ErrorExecutor;
 import com.naqing.common.Security;
 import com.naqing.common.TableElement;
 import com.naqing.wqa_android_ui_1.R;
@@ -63,8 +64,12 @@ public class fragment_control_system extends Fragment {
         AddLine(layout, TableElement.CreateSwitchViewLine(parent, "-密码开关-", Security.Instance().IsEnable(), (CompoundButton var1, boolean var2) -> {
             Security.Instance().EnableSecurity(var2);
         }));
-
-        AddLine(layout, TableElement.CreateTextViewLine(parent, "",""));
+        AddLine(layout, TableElement.CreateInputViewLine(parent, "密码修改", "******", (View view)->{
+            String input  = ((TextView)view).getText().toString();
+            ((TextView)view).setText("******");
+            Security.Instance().ChangePassword(input);
+            ErrorExecutor.PrintErrorInfo("密码修改成功!");
+        }));
         DBHelper data_db = WQAPlatform.GetInstance().GetDBHelperFactory();
         AddLine(layout, TableElement.CreateInputViewLine(parent, "-数据库保存时间(秒)-", data_db.GetCollectTimeBySecond() + "", (View var1)->{
             data_db.SetCollectTime(Integer.valueOf(((TextView)var1).getText().toString()));

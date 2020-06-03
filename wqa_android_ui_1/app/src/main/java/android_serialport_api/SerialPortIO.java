@@ -86,7 +86,6 @@ public class SerialPortIO implements IAbstractIO {
             TimeUnit.MILLISECONDS.sleep(5);
 //            Thread.sleep(1);
         }
-
         return rclen;
     }
 

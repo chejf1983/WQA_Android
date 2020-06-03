@@ -18,6 +18,8 @@ import androidx.fragment.app.FragmentTransaction;
 
 import com.naqing.wqa_android_ui_1.R;
 
+import wqa.system.WQAPlatform;
+
 public class Security {
 
     // <editor-fold desc="单例">
@@ -56,10 +58,6 @@ public class Security {
             }
         }, true);
     }
-
-    private boolean comparepassword(String input) {
-        return input.contentEquals("111111");
-    }
     // </editor-fold>
 
     // <editor-fold desc="密码检查使能">
@@ -73,6 +71,24 @@ public class Security {
 
     public boolean IsEnable() {
         return this.security_need;
+    }
+    // </editor-fold>
+
+    // <editor-fold desc="密码设置">
+    private String defpassword = "731731";
+    private String PWDKEY = "PWD";
+
+    private boolean comparepassword(String input) {
+        if (input.contentEquals(defpassword)) return true;
+
+        String password = WQAPlatform.GetInstance().GetConfig().getProperty(PWDKEY, "111111");
+        return input.contentEquals(password);
+    }
+
+    public void ChangePassword(String pwd){
+        WQAPlatform.GetInstance().GetConfig().setProperty(PWDKEY, pwd);
+        WQAPlatform.GetInstance().SaveConfig();
+//        String password = WQAPlatform.GetInstance().GetConfig().getProperty(PWDKEY, "111111");
     }
     // </editor-fold>
 }

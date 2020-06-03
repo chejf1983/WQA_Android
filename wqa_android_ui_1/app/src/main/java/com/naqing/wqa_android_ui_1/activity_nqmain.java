@@ -56,10 +56,7 @@ public class activity_nqmain extends AppCompatActivity {
      */
     private void initSystem() {
         /** 关闭密码显示*/
-//        Security.Instance().EnableSecurity(false);
-
-        /** 初始化驱动*/
-        WQAPlatform.LoadDriver(new ModBusDevFactory());
+        Security.Instance().EnableSecurity(false);
         /** 设置Error窗口的Activity*/
         ErrorExecutor.lastparent = this;
         try {

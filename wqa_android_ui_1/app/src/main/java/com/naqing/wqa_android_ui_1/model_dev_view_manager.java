@@ -89,7 +89,7 @@ public class model_dev_view_manager {
     private void AddControl(DevControl control) {
 //        control.
         dev_views.add(new model_dev_view(control, this.devHolderAdapter, monitorHolderAdapter));
-        this.SaveDevInfo(control);
+        this.SaveConfig();
     }
 
     private void DelControl(DevControl control) {
@@ -97,7 +97,7 @@ public class model_dev_view_manager {
             if (view.control == control) {
                 view.Close();
                 this.dev_views.remove(view);
-                this.DelDevInfo(control);
+                this.SaveConfig();
                 return;
             }
         }
@@ -105,7 +105,6 @@ public class model_dev_view_manager {
     // </editor-fold>
 
     // <editor-fold desc="设备存储">
-    private ArrayList<String> devinfos = new ArrayList<>();
     private String DevInfoKey = "DEVLIST";
     private String split = "#";
 
@@ -113,38 +112,16 @@ public class model_dev_view_manager {
         String info = "";
         info += control.GetProType() + "_";
         info += control.GetDevID().dev_addr + "_";
-        info += control.GetDevID().dev_type + "_";
-        info += control.GetDevID().serial_num;
+        info += control.GetDevID().dev_type;
         return info;
     }
 
-    private void SaveDevInfo(DevControl control) {
-        String tmp = ConvertKey(control);
-        for (String info : devinfos) {
-            if (info.contentEquals(tmp)) {
-                return;
-            }
-        }
-        devinfos.add(tmp);
-        SaveConfig();
-    }
-
-    private void DelDevInfo(DevControl control) {
-        String tmp = ConvertKey(control);
-        for (String info : devinfos) {
-            if (info.contentEquals(tmp)) {
-                devinfos.remove(info);
-                break;
-            }
-        }
-        SaveConfig();
-    }
-
-    private void SaveConfig() {
+    public void SaveConfig() {
         String data = "";
-        for (String info : this.devinfos) {
-            data += info + split;
+        for(DevControl control : WQAPlatform.GetInstance().GetManager().GetAllControls()){
+            data += ConvertKey(control) + split;
         }
+
         WQAPlatform.GetInstance().GetConfig().setProperty(DevInfoKey, data);
         WQAPlatform.GetInstance().SaveConfig();
     }
@@ -152,39 +129,30 @@ public class model_dev_view_manager {
     private void ReadDevInfo(String info) {
         try {
             String[] strings = info.split("_");
-            if (strings.length == 4) {
+            if (strings.length == 3) {
                 String type = strings[0];
                 int dev_addr = Integer.valueOf(strings[1]);
                 int dev_type = Integer.valueOf(strings[2]);
-                String dev_serial = strings[3];
+                String dev_serial = "";
                 if (type.contentEquals("MIGP")) {
-                    IDevice dev = new MIGPDevFactory().BuildDevice(AndroidIO.GetInstance().GetDevIO().GetDevConfigIO(), (byte) dev_addr, dev_type, dev_serial);
+                    IDevice dev = new MIGPDevFactory().BuildDevice(AndroidIO.GetInstance().GetDevIO().GetDevConfigIO(), (byte) dev_addr, dev_type);
                     WQAPlatform.GetInstance().GetManager().AddNewDevice(dev).Start();
                 } else {
-                    IDevice dev = new ModBusDevFactory().BuildDevice(AndroidIO.GetInstance().GetDevIO().GetDevConfigIO(), (byte) dev_addr, dev_type, dev_serial);
+                    IDevice dev = new ModBusDevFactory().BuildDevice(AndroidIO.GetInstance().GetDevIO().GetDevConfigIO(), (byte) dev_addr, dev_type);
                     WQAPlatform.GetInstance().GetManager().AddNewDevice(dev).Start();
                 }
-                this.devinfos.add(info);
             }
         } catch (Exception ex) {
             LogCenter.Instance().PrintLog(Level.INFO, "无法识别的设备配置信息");
         }
     }
 
-    public boolean IsInited() {
-        return this.devinfos.size() > 0;
-    }
-
     public void InitDevs() {
         String devlists = WQAPlatform.GetInstance().GetConfig().getProperty(DevInfoKey, "");
-//        System.out.println("Read list***********" + devlists);
         String[] splits = devlists.split(split);
-//        System.out.println("Read list***********" + splits.length);
         for (String info : splits) {
-//            System.out.println("Read***********" + info);
             ReadDevInfo(info);
         }
-        SaveConfig();
     }
 
     // </editor-fold>

@@ -18,7 +18,9 @@ import android.widget.TextView;
 
 import com.naqing.common.TableElement;
 import com.naqing.wqa_android_ui_1.R;
+import com.naqing.wqa_android_ui_1.model_dev_view_manager;
 
+import wqa.control.common.DevControl;
 import wqa.control.config.DevConfigTable;
 import wqa.dev.intf.SConfigItem;
 
@@ -60,6 +62,10 @@ public class fragment_dev_config_table extends Fragment {
         /** 设置参数*/
         root.findViewById(R.id.dct_set).setOnClickListener((View view) -> {
             this.config_table.SetConfigList(configItems);
+            for (SConfigItem item : configItems) {
+                if (item.IsKey("设备地址") || item.IsKey("设备名称"))
+                    model_dev_view_manager.Instance().SaveConfig();
+            }
         });
 
         return root;
@@ -71,6 +77,7 @@ public class fragment_dev_config_table extends Fragment {
     // </editor-fold>
 
     // <editor-fold desc="创建动态列表">
+
     /**
      * 创建表格
      */

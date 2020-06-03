@@ -8,6 +8,8 @@ import android.os.Message;
 
 import com.naqing.control.fragment_control_dev;
 import com.naqing.wqa_android_ui_1.fragment_monitor_main;
+import com.naqing.wqa_android_ui_1.model_dev_view_manager;
+
 import java.util.Date;
 import nahon.comm.event.Event;
 import nahon.comm.event.EventListener;

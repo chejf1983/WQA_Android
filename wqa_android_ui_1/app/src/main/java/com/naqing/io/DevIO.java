@@ -8,6 +8,7 @@ import wqa.system.WQAPlatform;
 public class DevIO {
     private ShareIO io_instance;
     private final String DEVIO = "DEVIO";
+
     // <editor-fold defaultstate="collapsed" desc="设备IO列表">
     public void initDevIO() throws Exception{
         /**读取配置*/
@@ -38,6 +39,7 @@ public class DevIO {
             io_instance = iolist;
 
             WQAPlatform.GetInstance().GetConfig().setProperty(DEVIO, AndroidIO.GetInstance().GetComManager().GetKey(io_instance));
+            WQAPlatform.GetInstance().SaveConfig();
         }
     }
     // </editor-fold>

@@ -11,6 +11,7 @@ import nahon.comm.faultsystem.LogCenter;
 import wqa.control.DB.DataRecord;
 import wqa.control.DB.IDataHelper;
 import wqa.control.DB.SDataRecordResult;
+import wqa.control.common.DataHelper;
 import wqa.control.common.SDisplayData;
 import wqa.control.data.DevID;
 import wqa.control.data.IMainProcess;
@@ -62,7 +63,7 @@ public class ADataDB implements IDataHelper {
 
         //获取静态数据表
         for (int i = 0; i < record.values.length; i++) {
-            int index = DataRecord.GetDataToDBIndex(id, record.names[i]);
+            int index = DataHelper.GetDataToDBIndex(id.dev_type, record.names[i]);
             //根据显示数据内容查找静态数据表的序号，对应到数据库中的位置（0号是id, 1号是time）
             record.values[i] = set.getFloat(index * 2 + 1);
             record.value_strings[i] = set.getString(index * 2 + 2);
@@ -87,8 +88,8 @@ public class ADataDB implements IDataHelper {
         }
 
         db_instance.dbLock.lock();
+        SDataRecordResult ret = new SDataRecordResult();
         try (SQLiteDatabase db = db_instance.getReadableDatabase()) {
-            SDataRecordResult ret = new SDataRecordResult();
             String[] pars;
             if (startTime != null) {
                 pars = new String[]{stopTime.getTime() + "", startTime.getTime() + ""};
@@ -123,12 +124,11 @@ public class ADataDB implements IDataHelper {
                 process.SetValue(100 * row / data_count);
             }
 
-            //通知完成
-            process.Finish(ret);
         } catch (Exception ex) {
             LogCenter.Instance().SendFaultReport(Level.SEVERE, "搜索失败", ex);
-            process.Finish(new SDataRecordResult());
         } finally {
+            //通知完成
+            process.Finish(ret);
             db_instance.dbLock.unlock();
         }
     }
@@ -140,7 +140,7 @@ public class ADataDB implements IDataHelper {
 
         String CREATE_TABLE_SQL = "create table if not exists " + table_name
                 + "(" + Time_Key + " long primary key";
-        for (int i = 0; i < DataRecord.GetAllData(id).length; i++) {
+        for (int i = 0; i < DataHelper.GetAllData(id.dev_type).length; i++) {
             CREATE_TABLE_SQL += ", " + DataIndexKey + i + " float";
             CREATE_TABLE_SQL += ", " + UnitIndexKey + i + " varchar(50)";
         }
@@ -164,7 +164,7 @@ public class ADataDB implements IDataHelper {
         }
         INSERT_TABLE_SQL += ")";
 
-        if(data.datas.length != DataRecord.GetAllData(data.dev_id).length){
+        if(data.datas.length != DataHelper.GetAllData(data.dev_id.dev_type).length){
             throw new Exception("数据长度不完整");
         }
 
@@ -176,7 +176,7 @@ public class ADataDB implements IDataHelper {
             tmp[0] = data.time.getTime();
             //赋值有效数据
             for (int i = 0; i < data.datas.length; i++) {
-                int index = DataRecord.GetDataToDBIndex(data.dev_id, data.datas[i].name);
+                int index = DataHelper.GetDataToDBIndex(data.dev_id.dev_type, data.datas[i].name);
                 tmp[index * 2 + 1] = data.datas[i].mainData;
                 tmp[index * 2 + 2] = data.datas[i].range_info + data.datas[i].unit;
             }
