@@ -26,6 +26,7 @@ import java.util.Timer;
 import java.util.TimerTask;
 import java.util.logging.Level;
 
+import migp.adapter.factory.MIGPDevFactory;
 import nahon.comm.event.Event;
 import nahon.comm.event.EventListener;
 import nahon.comm.faultsystem.LogCenter;
@@ -78,6 +79,7 @@ public class activity_nqmain extends AppCompatActivity {
 
             /**初始化Android串口*/
             AndroidIO.GetInstance().InitIO();
+            WQAPlatform.GetInstance().GetManager().SetDriver(new MIGPDevFactory());
         } catch (Exception ex) {
             ErrorExecutor.PrintErrorInfo("初始化失败:" + ex.getMessage().toString());
         }

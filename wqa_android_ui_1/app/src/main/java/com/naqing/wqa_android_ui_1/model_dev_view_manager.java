@@ -149,7 +149,6 @@ public class model_dev_view_manager {
         String devlists = WQAPlatform.GetInstance().GetConfig().getProperty(DevInfoKey, "");
         String[] splits = devlists.split(split);
         for (String info : splits) {
-            System.out.println(info + "*****************************");
             ReadDevInfo(info);
         }
     }

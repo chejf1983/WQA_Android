@@ -21,6 +21,7 @@ import java.util.logging.Level;
 
 import nahon.comm.faultsystem.LogCenter;
 import wqa.bill.io.SIOInfo;
+import wqa.system.WQAPlatform;
 
 
 public class fragment_control_io extends Fragment {
@@ -65,10 +66,12 @@ public class fragment_control_io extends Fragment {
                 AndroidIO.GetInstance().GetComManager().ChangeBandRate(AndroidIO.GetInstance().GetDevIO().GetDevConfigIO(), sioInfo.par[1]);
                 AndroidIO.GetInstance().GetDevIO().GetDevConfigIO().Close();
                 AndroidIO.GetInstance().GetDevIO().GetDevConfigIO().Open();
-            }catch (Exception ex){
+            } catch (Exception ex) {
                 LogCenter.Instance().ShowMessBox(Level.INFO, "设置失败");
             }
         }));
+        AddLine(layout, TableElement.CreateInputViewLine(parent, "搜索最大地址", WQAPlatform.GetInstance().GetManager().GetMaxAutoNum() + "",
+                (View view) -> WQAPlatform.GetInstance().GetManager().SetMaxAutoNum(Integer.parseInt(((TextView) view).getText().toString()))));
     }
 
     private void AddLine(LinearLayout layout, View view) {

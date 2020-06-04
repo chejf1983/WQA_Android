@@ -35,9 +35,11 @@ public class DevIO {
 
     public void SetDevConfigIO(ShareIO iolist) {
         if(iolist != null){
+            WQAPlatform.GetInstance().GetManager().DelIO(io_instance);
             /**如果找不到，设置第一个IO口为设备口*/
             io_instance = iolist;
 
+            WQAPlatform.GetInstance().GetManager().AddIO(io_instance);
             WQAPlatform.GetInstance().GetConfig().setProperty(DEVIO, AndroidIO.GetInstance().GetComManager().GetKey(io_instance));
         }
     }
