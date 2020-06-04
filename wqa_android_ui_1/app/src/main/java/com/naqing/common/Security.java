@@ -87,8 +87,6 @@ public class Security {
 
     public void ChangePassword(String pwd){
         WQAPlatform.GetInstance().GetConfig().setProperty(PWDKEY, pwd);
-        WQAPlatform.GetInstance().SaveConfig();
-//        String password = WQAPlatform.GetInstance().GetConfig().getProperty(PWDKEY, "111111");
     }
     // </editor-fold>
 }

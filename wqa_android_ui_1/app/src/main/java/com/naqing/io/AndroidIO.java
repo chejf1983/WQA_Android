@@ -9,12 +9,12 @@ public class AndroidIO {
 
     private AndroidIO(){
 //        WQAPlatform.GetInstance().GetIOManager()
-        WQAPlatform.GetInstance().GetIOManager().SendReceive.RegeditListener(new EventListener<String>() {
-            @Override
-            public void recevieEvent(Event<String> event) {
-                System.out.println(event.GetEvent());
-            }
-        });
+//        WQAPlatform.GetInstance().GetIOManager().SendReceive.RegeditListener(new EventListener<String>() {
+//            @Override
+//            public void recevieEvent(Event<String> event) {
+//                System.out.println(event.GetEvent());
+//            }
+//        });
     }
     public static AndroidIO GetInstance() {
         if (instance == null) {

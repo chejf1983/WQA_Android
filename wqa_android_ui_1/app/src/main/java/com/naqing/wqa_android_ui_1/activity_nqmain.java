@@ -66,8 +66,6 @@ public class activity_nqmain extends AppCompatActivity {
             WQAPlatform.GetInstance().GetDBHelperFactory().SetDB(adb);
             /** 初始化系统模块(默认文件路径)*/
             WQAPlatform.GetInstance().InitSystem(this.getFilesDir().getPath());
-//            /** 关闭设备定标LOG*/
-//            DevLog.Instance().SetLogSwitch(false);
             /** 初始化错误提示信息*/
             LogCenter.Instance().RegisterFaultEvent(new EventListener<Level>() {
                 @Override

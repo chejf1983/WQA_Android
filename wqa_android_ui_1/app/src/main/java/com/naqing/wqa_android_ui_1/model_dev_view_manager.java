@@ -123,7 +123,6 @@ public class model_dev_view_manager {
         }
 
         WQAPlatform.GetInstance().GetConfig().setProperty(DevInfoKey, data);
-        WQAPlatform.GetInstance().SaveConfig();
     }
 
     private void ReadDevInfo(String info) {
@@ -133,7 +132,6 @@ public class model_dev_view_manager {
                 String type = strings[0];
                 int dev_addr = Integer.valueOf(strings[1]);
                 int dev_type = Integer.valueOf(strings[2]);
-                String dev_serial = "";
                 if (type.contentEquals("MIGP")) {
                     IDevice dev = new MIGPDevFactory().BuildDevice(AndroidIO.GetInstance().GetDevIO().GetDevConfigIO(), (byte) dev_addr, dev_type);
                     WQAPlatform.GetInstance().GetManager().AddNewDevice(dev).Start();
@@ -151,6 +149,7 @@ public class model_dev_view_manager {
         String devlists = WQAPlatform.GetInstance().GetConfig().getProperty(DevInfoKey, "");
         String[] splits = devlists.split(split);
         for (String info : splits) {
+            System.out.println(info + "*****************************");
             ReadDevInfo(info);
         }
     }

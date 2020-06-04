@@ -39,7 +39,6 @@ public class DevIO {
             io_instance = iolist;
 
             WQAPlatform.GetInstance().GetConfig().setProperty(DEVIO, AndroidIO.GetInstance().GetComManager().GetKey(io_instance));
-            WQAPlatform.GetInstance().SaveConfig();
         }
     }
     // </editor-fold>
