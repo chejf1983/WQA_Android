@@ -3,24 +3,20 @@ package com.naqing.wqa_android_ui_1;
 import android.app.Activity;
 import android.content.Context;
 import android.os.Bundle;
-
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentActivity;
 import androidx.fragment.app.FragmentTransaction;
-
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CompoundButton;
 import android.widget.RadioButton;
-
 import com.naqing.control.control_info;
 import com.naqing.control.fragment_control_dev;
 import com.naqing.control.fragment_control_history;
 import com.naqing.control.fragment_control_io;
 import com.naqing.control.fragment_control_system;
-import com.naqing.wqa_android_ui_1.R;
 
 public class fragment_control_main extends Fragment {
 

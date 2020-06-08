@@ -1,37 +1,26 @@
 package com.naqing.wqa_android_ui_1;
 
-import android.content.Context;
 import android.os.Bundle;
-
 import com.naqing.adb.ADBHelper;
 import com.naqing.common.ErrorExecutor;
 import com.naqing.common.Security;
 import com.naqing.io.AndroidIO;
-
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.FragmentTransaction;
-
 import android.os.Handler;
 import android.os.Message;
-import android.util.AttributeSet;
 import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
-
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Timer;
 import java.util.TimerTask;
 import java.util.logging.Level;
-
 import migp.adapter.factory.MIGPDevFactory;
 import nahon.comm.event.Event;
 import nahon.comm.event.EventListener;
 import nahon.comm.faultsystem.LogCenter;
-import wqa.adapter.factory.ModBusDevFactory;
-import wqa.bill.log.DevLog;
 import wqa.system.WQAPlatform;
 
 public class activity_nqmain extends AppCompatActivity {
@@ -79,7 +68,7 @@ public class activity_nqmain extends AppCompatActivity {
 
             /**初始化Android串口*/
             AndroidIO.GetInstance().InitIO();
-            WQAPlatform.GetInstance().GetManager().SetDriver(new MIGPDevFactory());
+            WQAPlatform.GetInstance().GetManager().ChangeAutoSeachDriver(new MIGPDevFactory());
         } catch (Exception ex) {
             ErrorExecutor.PrintErrorInfo("初始化失败:" + ex.getMessage().toString());
         }
@@ -112,13 +101,6 @@ public class activity_nqmain extends AppCompatActivity {
 
     // <editor-fold desc="全屏切换">
     private boolean ishide = true;
-
-    private void initHide() {
-//        FloatingActionButton fab = findViewById(R.id.fab);
-//        fab.setOnClickListener((View view)->{
-//                messagehandler.sendEmptyMessage(HIDSCREEN);
-//        });
-    }
 
     private int hideNavigation() {
         int ishide = -1;

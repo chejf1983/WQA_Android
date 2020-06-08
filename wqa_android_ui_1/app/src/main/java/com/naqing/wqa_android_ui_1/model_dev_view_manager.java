@@ -2,14 +2,11 @@ package com.naqing.wqa_android_ui_1;
 
 import android.os.Handler;
 import android.os.Message;
-
 import com.naqing.control.fragment_control_dev;
 import com.naqing.dev_views.model_dev_view;
 import com.naqing.io.AndroidIO;
-
 import java.util.ArrayList;
 import java.util.logging.Level;
-
 import migp.adapter.factory.MIGPDevFactory;
 import nahon.comm.event.Event;
 import nahon.comm.event.EventListener;
@@ -53,7 +50,6 @@ public class model_dev_view_manager {
             };
             WQAPlatform.GetInstance().GetManager().StateChange.RegeditListener(eventListener);
         }
-//       InitDevs();
     }
 
     // <editor-fold desc="注册设备界面，和数据界面">

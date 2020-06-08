@@ -139,6 +139,7 @@ public class fragment_control_history extends Fragment {
         start_time = new Date();
         start_time.setTime(stop_time.getTime() - 3600 * 24 * 1000 * 365);
 
+        System.out.println(new SimpleDateFormat(TIMEFORMATE).format(stop_time));
         /** 设置起止时间*/
         TextView start_text = root.findViewById(R.id.mchart_start_time);
         start_text.setText(new SimpleDateFormat(TIMEFORMATE).format(start_time));

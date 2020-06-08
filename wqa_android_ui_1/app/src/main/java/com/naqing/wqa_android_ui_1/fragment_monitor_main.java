@@ -11,14 +11,10 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.GridView;
 import android.widget.ListView;
-
 import androidx.fragment.app.Fragment;
-
 import com.naqing.dev_views.model_dev_view;
 import com.naqing.dev_views.model_monitor_holder;
-
 import java.util.ArrayList;
-
 import wqa.adapter.factory.CDevDataTable;
 
 public class fragment_monitor_main extends Fragment {

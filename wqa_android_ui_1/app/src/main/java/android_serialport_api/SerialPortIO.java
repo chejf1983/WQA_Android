@@ -68,7 +68,7 @@ public class SerialPortIO implements IAbstractIO {
         int rclen = 0;
         //10ms一个周期
         long start_time = System.currentTimeMillis();
-        byte[] tmp_data = new byte[1000];
+        byte[] tmp_data = new byte[400];
         while (System.currentTimeMillis() - start_time < timeout) {
             //如果有数据，读一次
             if (comin.available() > 0) {
