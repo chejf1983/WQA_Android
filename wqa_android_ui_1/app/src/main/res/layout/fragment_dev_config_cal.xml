@@ -13,26 +13,16 @@
         android:orientation="vertical"
         android:weightSum="10">
 
-        <TextView
-            android:id="@+id/dct_title"
-            style="@style/common_text"
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_margin="5dp"
-            android:layout_weight="1"
-            android:gravity="center"
-            android:text="配置参数表"
-            android:textSize="20dp" />
-
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_marginTop="5dp"
             android:paddingTop="5dp"
             android:layout_weight="1.2"
+            android:paddingLeft="10dp"
             android:orientation="horizontal"
-            android:paddingRight="15dp"
-            android:weightSum="2">
+            android:paddingRight="10dp"
+            android:weightSum="5">
 
             <TextView
                 style="@style/common_text"
@@ -46,24 +36,15 @@
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
+                android:layout_marginLeft="5dp"
                 android:text="校准" />
-        </LinearLayout>
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:paddingTop="5dp"
-            android:layout_weight="1.2"
-            android:paddingRight="15dp"
-            android:orientation="horizontal"
-            android:weightSum="2">
-
             <TextView
                 style="@style/common_text"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
                 android:popupBackground="#001952"
+                android:layout_marginLeft="5dp"
                 android:text="效准点数"/>
             <TextView
                 style="@style/common_input_text"
@@ -71,8 +52,18 @@
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
+                android:layout_marginLeft="5dp"
+                android:text="校准" />
+            <Button
+                android:id="@+id/dcc_dset"
+                style="@style/common_button_style"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:layout_marginLeft="5dp"
                 android:text="校准" />
         </LinearLayout>
+
 
         <ScrollView
             android:layout_width="match_parent"
@@ -89,6 +80,19 @@
                 android:paddingEnd="10dp"></LinearLayout>
         </ScrollView>
 
+    <LinearLayout
+        android:id="@+id/dcc_tcal_area"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_marginTop="5dp"
+        android:paddingTop="5dp"
+        android:layout_weight="2"
+        android:paddingLeft="10dp"
+        android:orientation="horizontal"
+        android:paddingRight="10dp"
+        android:weightSum="5">
+
+    </LinearLayout>
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="0dp"
@@ -126,7 +130,7 @@
                 android:layout_weight="1"
                 android:text="--"/>
             <Button
-                android:id="@+id/dcc_set"
+                android:id="@+id/dcc_tset"
                 style="@style/common_button_style"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"

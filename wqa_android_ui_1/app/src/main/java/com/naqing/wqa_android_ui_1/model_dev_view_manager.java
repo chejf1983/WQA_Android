@@ -85,7 +85,7 @@ public class model_dev_view_manager {
     private void AddControl(DevControl control) {
 //        control.
         dev_views.add(new model_dev_view(control, this.devHolderAdapter, monitorHolderAdapter));
-        this.SaveConfig();
+//        this.SaveConfig();
     }
 
     private void DelControl(DevControl control) {
@@ -93,7 +93,7 @@ public class model_dev_view_manager {
             if (view.control == control) {
                 view.Close();
                 this.dev_views.remove(view);
-                this.SaveConfig();
+//                this.SaveConfig();
                 return;
             }
         }

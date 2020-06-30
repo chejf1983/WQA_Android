@@ -83,6 +83,15 @@ public class fragment_dev_config_cal extends Fragment {
     private void initView() {
         this.init_cal_type();
 
+        InitTemperLine();
+
+        root.findViewById(R.id.dcc_dset).setOnClickListener((View view) -> {
+            start_cal();
+        });
+        root.findViewById(R.id.dcc_tset).setOnClickListener((View view) -> {
+            start_tcal();
+        });
+
         if (eventListener == null) {
             eventListener = new EventListener<SDisplayData>() {
                 @Override
@@ -95,10 +104,6 @@ public class fragment_dev_config_cal extends Fragment {
             };
             this.cal_config.CalDataEvent.RegeditListener(eventListener);
         }
-
-        root.findViewById(R.id.dcc_set).setOnClickListener((View view) -> {
-            start_cal();
-        });
     }
 
     public void reset_calconfig(DevCalConfig cal_config) {
@@ -154,13 +159,13 @@ public class fragment_dev_config_cal extends Fragment {
     private String selected_type = "";
 
     private void init_cal_type() {
-        ((TextView) root.findViewById(R.id.dct_title)).setText("参数校准");
         /**添加支持定标的种类*/
         TextView sp_devtype = root.findViewById(R.id.dcc_cal_type);
         //获取种类列表
-        String[] typelist = new String[cal_config.GetCalType().length];
+        String[] typelist = new String[cal_config.GetCalType().length - 1];
         for (int i = 0; i < typelist.length; i++) {
-            typelist[i] = cal_config.GetCalType()[i];
+            if (!cal_config.GetCalType()[i].contentEquals("温度"))
+                typelist[i] = cal_config.GetCalType()[i];
         }
         //设置默认值
         if (typelist.length > 0) {
@@ -184,7 +189,7 @@ public class fragment_dev_config_cal extends Fragment {
         /**添加支持的定标点个数*/
         TextView sp_num = root.findViewById(R.id.dcc_cal_num);
         int num = cal_config.GetCalMaxNum(s_type);
-        if(num > 0) {
+        if (num > 0) {
             String[] num_list = new String[num];
             for (int i = 0; i < num_list.length; i++) {
                 num_list[i] = i + 1 + "";
@@ -231,30 +236,83 @@ public class fragment_dev_config_cal extends Fragment {
         /** 添加名称项目*/
         LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(0, LinearLayout.LayoutParams.MATCH_PARENT);
         /** 添加标文字*/
-        lp.weight = 1;
+        lp.weight = 0.5f;
         row.addView(TableElement.createTextView(parent, "标" + index + ":"), lp);
 
+        lp = new LinearLayout.LayoutParams(0, LinearLayout.LayoutParams.MATCH_PARENT);
+        lp.weight = 1;
         /** 添加原始值输入框*/
         line.std = (TextView) TableElement.createInputView(parent, "标" + index + ":", "", null);
         if (selected_type.contentEquals("溶解氧")) {
             String[] info = new String[]{"饱和氧", "无氧"};
-            row.addView(TableElement.createTextView(parent, info[index]), lp);
+            row.addView(TableElement.createTextView(parent, info[index - 1]), lp);
         } else {
             row.addView(line.std, lp);
         }
         /** 添加原始值标签*/
         row.addView(TableElement.createTextView(parent, "原始值:"), lp);
         /** 添加原始值输入框*/
+        lp = new LinearLayout.LayoutParams(0, LinearLayout.LayoutParams.MATCH_PARENT);
+        lp.weight = 2;
         line.ora = (TextView) TableElement.createInputView(parent, "原始值:", "", null);
         row.addView(line.ora, lp);
         /** 添加开关按钮*/
+        lp = new LinearLayout.LayoutParams(0, LinearLayout.LayoutParams.MATCH_PARENT);
+        lp.weight = 0.5f;
         row.addView(TableElement.createSwitchView(parent, line.swt, (CompoundButton var1, boolean var2) -> {
             line.swt = var2;
         }), lp);
         return row;
     }
 
+    private void InitTemperLine() {
+        /** 清除表格项*/
+        LinearLayout layout = root.findViewById(R.id.dcc_tcal_area);
+        layout.removeAllViews();
+
+
+        /** 新建一行*/
+        LinearLayout row = new LinearLayout(parent);
+        row.setWeightSum(5);
+        row.setOrientation(TableRow.HORIZONTAL);
+
+        //保存line
+        temper_line = new row_line();
+
+        /** 添加名称项目*/
+        LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(0, LinearLayout.LayoutParams.MATCH_PARENT);
+        /** 添加标文字*/
+        lp.weight = 0.5f;
+        row.addView(TableElement.createTextView(parent, "测量温度"), lp);
+
+        lp = new LinearLayout.LayoutParams(0, LinearLayout.LayoutParams.MATCH_PARENT);
+        lp.weight = 1;
+        /** 添加原始值输入框*/
+        temper_line.std = (TextView) TableElement.createInputView(parent, "测量温度", "", null);
+        row.addView(temper_line.std, lp);
+
+        /** 添加原始值标签*/
+        row.addView(TableElement.createTextView(parent, "原始值:"), lp);
+        /** 添加原始值输入框*/
+        lp = new LinearLayout.LayoutParams(0, LinearLayout.LayoutParams.MATCH_PARENT);
+        lp.weight = 2;
+        temper_line.ora = (TextView) TableElement.createInputView(parent, "原始值:", "", null);
+        row.addView(temper_line.ora, lp);
+        /** 添加开关按钮*/
+        lp = new LinearLayout.LayoutParams(0, LinearLayout.LayoutParams.MATCH_PARENT);
+        lp.weight = 0.5f;
+        row.addView(TableElement.createSwitchView(parent, temper_line.swt, (CompoundButton var1, boolean var2) -> {
+            temper_line.swt = var2;
+        }), lp);
+
+        /** 根据当前定标点数，添加定标控制行*/
+        lp = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, 45);
+        lp.setMargins(0, 10, 0, 0);
+        layout.addView(row, lp);
+    }
+
     private ArrayList<row_line> lines = new ArrayList<>();
+    private row_line temper_line = new row_line();
 
     private class row_line {
         TextView std, ora;
@@ -281,6 +339,25 @@ public class fragment_dev_config_cal extends Fragment {
             }
         }
         this.cal_config.CalParameter(this.selected_type, oradata, stddata);
+    }
+
+    private void start_tcal() {
+        float[] stddata = new float[1];
+        float[] oradata = new float[1];
+        if (this.temper_line.swt) {
+            LogCenter.Instance().ShowMessBox(Level.INFO, "温度定标还未就绪,请点击旁边的蓝色开关");
+            return;
+        } else {
+            try {
+                stddata[0] = Float.valueOf(temper_line.std.getText().toString());
+                oradata[0] = Float.valueOf(temper_line.ora.getText().toString());
+            } catch (Exception ex) {
+                LogCenter.Instance().SendFaultReport(Level.INFO, ex.getMessage());
+                return;
+            }
+        }
+
+        this.cal_config.CalParameter("温度", oradata, stddata);
     }
     // </editor-fold>
 }

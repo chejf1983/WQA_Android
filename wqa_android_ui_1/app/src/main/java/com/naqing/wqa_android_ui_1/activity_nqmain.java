@@ -38,7 +38,7 @@ public class activity_nqmain extends AppCompatActivity {
 
         initSystem();
 
-        model_dev_view_manager.Instance().InitDevs();
+//        model_dev_view_manager.Instance().InitDevs();
     }
 
     /**
@@ -66,11 +66,12 @@ public class activity_nqmain extends AppCompatActivity {
                 }
             });
 
+            WQAPlatform.GetInstance().GetConfig().setProperty("IPS", "Naqing");
             /**初始化Android串口*/
             AndroidIO.GetInstance().InitIO();
             WQAPlatform.GetInstance().GetManager().ChangeAutoSeachDriver(new MIGPDevFactory());
         } catch (Exception ex) {
-            ErrorExecutor.PrintErrorInfo("初始化失败:" + ex.getMessage().toString());
+            ErrorExecutor.PrintErrorInfo("初始化失败:" + ex.getMessage());
         }
     }
 
@@ -134,6 +135,9 @@ public class activity_nqmain extends AppCompatActivity {
     // </editor-fold>
 
     // <editor-fold desc="系统时间显示">
+    private SimpleDateFormat timeformat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+    private Date curent_time = new Date();
+
     private void initTime() {
         new Timer().schedule(new TimerTask() {
             @Override
@@ -142,10 +146,10 @@ public class activity_nqmain extends AppCompatActivity {
             }
         }, 0, 1000);
     }
-
     private void updatetime() {
         TextView time_display = findViewById(R.id.nqmain_time);
-        time_display.setText(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date()));
+        curent_time.setTime(System.currentTimeMillis());
+        time_display.setText(timeformat.format(curent_time));
     }
     // </editor-fold>
 

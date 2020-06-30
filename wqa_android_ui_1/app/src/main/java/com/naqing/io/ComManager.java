@@ -4,12 +4,8 @@
  * and open the template in the editor.
  */
 package com.naqing.io;
-
-import com.naqing.mockdev.MOCKIOFactory;
-
 import java.util.ArrayList;
 import java.util.EventListener;
-
 import android_serialport_api.SerialPortFactory;
 import android_serialport_api.SerialPortFinder;
 import wqa.bill.io.SIOInfo;

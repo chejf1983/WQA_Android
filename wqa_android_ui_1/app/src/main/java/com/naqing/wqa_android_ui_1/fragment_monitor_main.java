@@ -49,10 +49,11 @@ public class fragment_monitor_main extends Fragment {
 
     public model_monitor_holder[] CreateMonitor(model_dev_view dev_view) {
         ArrayList<model_monitor_holder> tmp = new ArrayList<>();
-        CDevDataTable.DataInfo[] dataInfos = CDevDataTable.GetInstance().GetStanderDatas(dev_view.control.GetDevID().dev_type, false, false);
-        for (int i = 0; i < dataInfos.length; i++) {
-            if (!dataInfos[i].data_name.contentEquals("温度")) {
-                model_monitor_holder holder = new model_monitor_holder(parent, dev_view, dataInfos[i].data_name);
+//        CDevDataTable.DataInfo[] dataInfos = CDevDataTable.GetInstance().GetStanderDatas(dev_view.control.GetDevID().dev_type, false, false);
+        ;
+        for (int i : dev_view.control.GetCollector().GetMaxDataSort()) {
+            if (0 != i) {
+                model_monitor_holder holder = new model_monitor_holder(parent, dev_view, dev_view.control.GetCollector().GetArrayName(i));
                 tmp.add(holder);
             }
         }

@@ -1,9 +1,5 @@
 package com.naqing.io;
 
-import nahon.comm.event.Event;
-import nahon.comm.event.EventListener;
-import wqa.system.WQAPlatform;
-
 public class AndroidIO {
     private static AndroidIO instance;
 

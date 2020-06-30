@@ -122,8 +122,6 @@ public class model_dev_view {
             return;
         }
 
-//        Bundle bundle = new Bundle();
-//        bundle.putString("name", this.control.toString());
         Intent intent = new Intent(parentActivity, activity_dev_config.class);
         intent.putExtras(new Bundle());
         intent.putExtra("name", control.ToString());

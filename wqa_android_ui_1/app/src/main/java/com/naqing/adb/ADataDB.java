@@ -57,9 +57,13 @@ public class ADataDB implements IDataHelper {
     // <editor-fold defaultstate="collapsed" desc="搜索">
     //搜索数据
     private DataRecord BuildRecord(DevID id, Cursor set) throws Exception {
-        DataRecord record = new DataRecord(id);
+        DataRecord record = new DataRecord();
         //读取时间
+        record.dev_info = id;
         record.time.setTime(set.getLong(0));
+        record.names = DataHelper.GetSupportDataName(id.dev_type);
+        record.values = new Float[record.names.length];
+        record.value_strings = new String[record.names.length];
 
         //获取静态数据表
         for (int i = 0; i < record.values.length; i++) {
@@ -154,31 +158,30 @@ public class ADataDB implements IDataHelper {
         }
     }
 
-    public void AddData(SDisplayData data) throws Exception {
+    public void AddData(DataRecord data) throws Exception {
 //        获取表名称
-        String table_name = ConvertTableName(data.dev_id);
+        String table_name = ConvertTableName(data.dev_info);
         //初始化插入SQL语句
         String INSERT_TABLE_SQL = "insert into " + table_name + " values(?";
-        for (int i = 0; i < data.datas.length; i++) {
+        for (int i = 0; i < data.names.length; i++) {
             INSERT_TABLE_SQL += ", ?, ?";
         }
         INSERT_TABLE_SQL += ")";
 
-        if(data.datas.length != DataHelper.GetAllData(data.dev_id.dev_type).length){
+        if(data.names.length != DataHelper.GetAllData(data.dev_info.dev_type).length){
             throw new Exception("数据长度不完整");
         }
 
         db_instance.dbLock.lock();
         try (SQLiteDatabase db = db_instance.getWritableDatabase()) {
-            Object[] tmp = new Object[data.datas.length * 2 + 1];
+            Object[] tmp = new Object[data.names.length * 2 + 1];
 
             //设置时间
             tmp[0] = data.time.getTime();
             //赋值有效数据
-            for (int i = 0; i < data.datas.length; i++) {
-                int index = DataHelper.GetDataToDBIndex(data.dev_id.dev_type, data.datas[i].name);
-                tmp[index * 2 + 1] = data.datas[i].mainData;
-                tmp[index * 2 + 2] = data.datas[i].range_info + data.datas[i].unit;
+            for (int i = 0; i < data.names.length; i++) {
+                tmp[i * 2 + 1] = data.values[i];
+                tmp[i * 2 + 2] = data.value_strings[i];
             }
             db.execSQL(INSERT_TABLE_SQL, tmp);
         } finally {
@@ -187,8 +190,8 @@ public class ADataDB implements IDataHelper {
     }
 
     @Override
-    public void SaveData(SDisplayData collectData) throws Exception {
-        CreateTableIfNotExist(collectData.dev_id);
+    public void SaveData(DataRecord collectData) throws Exception {
+        CreateTableIfNotExist(collectData.dev_info);
 
         AddData(collectData);
     }

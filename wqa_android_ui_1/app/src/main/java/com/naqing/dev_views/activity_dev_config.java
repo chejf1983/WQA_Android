@@ -99,9 +99,6 @@ public class activity_dev_config extends AppCompatActivity {
 
         /** 创建报警信息界面*/
         initCal(dev_view);
-
-        /** 创建显示控制界面*/
-        initViewSet(dev_view);
     }
     // </editor-fold>
 
@@ -201,33 +198,18 @@ public class activity_dev_config extends AppCompatActivity {
         });
     }
 
-    /**初始化显示设置界面*/
-    private void initViewSet(model_dev_view config){
-        if(config == null){
-            return;
-        }
-
-        RadioButton button = initButton("显示设置");
-        fragment_dev_viewset table = new fragment_dev_viewset(config);
-        fragments.add(table);
-        button.setOnCheckedChangeListener((CompoundButton var1, boolean checked)->{
-            FragmentTransaction fragmentTransaction = activity_dev_config.this.getSupportFragmentManager().beginTransaction();
-            if(checked) {
-                table.reset_calconfig(config);
-                fragmentTransaction.replace(R.id.fragment_dev_config_area, table).commit();
-            }
-        });
-    }
-
     // </editor-fold>
 
     /**初始化列表按钮*/
     private RadioButton initButton(String name) {
         RadioGroup radioGroup = findViewById(R.id.dev_config_rbgroup);
+//        radioGroup.setWeightSum(8);
 //        RadioButton radioButton = new RadioButton(new ContextThemeWrapper(this, R.style.config_radio_style));
         RadioButton radioButton = (RadioButton) LayoutInflater.from(this).inflate(R.layout.model_button, null);
         radioButton.setText(name);
-        LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+        LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, 50);
+        lp.weight = 1;
+        radioButton.setLayoutParams(lp);
         radioGroup.addView(radioButton, lp);
         return radioButton;
     }
