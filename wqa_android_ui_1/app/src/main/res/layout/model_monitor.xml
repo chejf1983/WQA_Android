@@ -7,8 +7,8 @@
     android:weightSum="10">
 
     <TextView
-        style="@style/common_text"
         android:id="@+id/m_monitor_name"
+        style="@style/common_text"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1.5"
@@ -35,9 +35,17 @@
             android:id="@+id/m_monitor_data_name"
             android:layout_width="match_parent"
             android:layout_height="0dp"
+            android:layout_weight="2.2"
             android:gravity="center"
-            android:textSize="25dp"
-            android:layout_weight="2.5" />
+            android:textSize="25dp" />
+
+        <LinearLayout
+            android:id="@+id/m_monitor_index"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="0.3"
+            android:gravity="center"
+            android:orientation="horizontal" />
 
         <TextView
             android:id="@+id/m_monitor_data"
@@ -53,18 +61,18 @@
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_weight="2"
-            android:textSize="18dp"
             android:gravity="center"
-            android:text="" />
-        
+            android:text=""
+            android:textSize="18dp" />
+
         <TextView
             android:id="@+id/m_monitor_temper"
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_weight="2"
-            android:textSize="18dp"
             android:gravity="center|center_horizontal"
-            android:text="" />
+            android:text=""
+            android:textSize="18dp" />
     </LinearLayout>
 
     <TextView
@@ -77,16 +85,17 @@
         android:layout_height="0dp"
         android:layout_weight="1.5"
         android:weightSum="3">
+
         <ImageButton
             android:id="@+id/m_monitor_config_button"
             style="@style/common_button_style"
             android:layout_width="0dp"
             android:layout_height="match_parent"
+            android:layout_gravity="center"
             android:layout_marginLeft="10dp"
             android:layout_marginRight="10dp"
-            android:src="@drawable/dev_config"
-            android:layout_gravity="center"
-            android:layout_weight="3"/>
+            android:layout_weight="3"
+            android:src="@drawable/dev_config" />
 
     </LinearLayout>
 
