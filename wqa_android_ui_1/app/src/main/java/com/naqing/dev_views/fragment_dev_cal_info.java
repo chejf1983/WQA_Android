@@ -29,13 +29,13 @@ import wqa.control.DB.AlarmRecord;
 import wqa.control.data.IMainProcess;
 import wqa.system.WQAPlatform;
 
-public class fragment_dev_cal extends Fragment {
+public class fragment_dev_cal_info extends Fragment {
     private model_dev_view config_table;
     private ArrayList<String> cal_log = new ArrayList<>();
     private View root;
     private Activity parent;
 
-    public fragment_dev_cal(model_dev_view config_table) {
+    public fragment_dev_cal_info(model_dev_view config_table) {
         this.config_table = config_table;
     }
 

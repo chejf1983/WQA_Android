@@ -47,9 +47,6 @@ public class fragment_dev_config_table extends Fragment {
         // Inflate the layout for this fragment
         root = inflater.inflate(R.layout.fragment_config_table, container, false);
 
-        /** 设置列表名称*/
-        ((TextView) root.findViewById(R.id.dct_title)).setText(config_table.GetListName());
-
         /** 创建表格*/
         this.createTable(this.config_table);
 

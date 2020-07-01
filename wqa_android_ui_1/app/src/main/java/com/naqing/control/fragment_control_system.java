@@ -50,8 +50,6 @@ public class fragment_control_system extends Fragment {
 
     // <editor-fold desc="初始化界面">
     private void initView() {
-        ((TextView) root.findViewById(R.id.dct_title)).setText("系统设置");
-
         /** 清除表格项*/
         LinearLayout layout = root.findViewById(R.id.dct_list);
         layout.removeAllViews();

@@ -186,7 +186,7 @@ public class activity_dev_config extends AppCompatActivity {
         }
 
         RadioButton button = initButton("定标信息");
-        fragment_dev_cal table = new fragment_dev_cal(config);
+        fragment_dev_cal_info table = new fragment_dev_cal_info(config);
         fragments.add(table);
 //        table.ReadAlarm();
         button.setOnCheckedChangeListener((CompoundButton var1, boolean checked)->{

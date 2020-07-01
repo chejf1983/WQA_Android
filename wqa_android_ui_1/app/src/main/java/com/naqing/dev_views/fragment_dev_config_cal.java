@@ -59,7 +59,11 @@ public class fragment_dev_config_cal extends Fragment {
         // Inflate the layout for this fragment
         root = inflater.inflate(R.layout.fragment_dev_config_cal, container, false);
 
-        this.initView();
+        this.initDateCal();
+
+        initTemperCal();
+
+        initUpdate();
 
         return root;
     }
@@ -67,49 +71,18 @@ public class fragment_dev_config_cal extends Fragment {
     @Override
     public void onStart() {
         super.onStart();
-
         cal_config.SetStartGetData(true);
     }
 
     @Override
     public void onStop() {
         super.onStop();
-
         cal_config.SetStartGetData(false);
-    }
-    // </editor-fold>
-
-    // <editor-fold desc="刷新界面">
-    private void initView() {
-        this.init_cal_type();
-
-        InitTemperLine();
-
-        root.findViewById(R.id.dcc_dset).setOnClickListener((View view) -> {
-            start_cal();
-        });
-        root.findViewById(R.id.dcc_tset).setOnClickListener((View view) -> {
-            start_tcal();
-        });
-
-        if (eventListener == null) {
-            eventListener = new EventListener<SDisplayData>() {
-                @Override
-                public void recevieEvent(Event<SDisplayData> event) {
-                    Message msg = new Message();
-                    msg.what = DATA;
-                    msg.obj = event.GetEvent();
-                    messagehandler.sendMessage(msg);
-                }
-            };
-            this.cal_config.CalDataEvent.RegeditListener(eventListener);
-        }
     }
 
     public void reset_calconfig(DevCalConfig cal_config) {
         this.cal_config = cal_config;
     }
-
     // </editor-fold>
 
     // <editor-fold desc="消息中心">
@@ -125,6 +98,24 @@ public class fragment_dev_config_cal extends Fragment {
     };
     // </editor-fold>
 
+    // </editor-fold>
+
+    // <editor-fold desc="显示数据">
+    private void initUpdate(){
+        if (eventListener == null) {
+            eventListener = new EventListener<SDisplayData>() {
+                @Override
+                public void recevieEvent(Event<SDisplayData> event) {
+                    Message msg = new Message();
+                    msg.what = DATA;
+                    msg.obj = event.GetEvent();
+                    messagehandler.sendMessage(msg);
+                }
+            };
+            this.cal_config.CalDataEvent.RegeditListener(eventListener);
+        }
+    }
+
     private EventListener<SDisplayData> eventListener;
 
     /**
@@ -138,6 +129,7 @@ public class fragment_dev_config_cal extends Fragment {
         SDataElement maindata = data.GetDataElement(this.selected_type);
         SDataElement maindata_ora = data.GetOraDataElement(this.selected_type);
         SDataElement temper = data.GetDataElement("温度");
+        SDataElement temper_ora = data.GetOraDataElement("温度");
 
         /**刷新定标值*/
         for (row_line line : lines) {
@@ -146,12 +138,25 @@ public class fragment_dev_config_cal extends Fragment {
                 line.ora.setText(maindata_ora.mainData + "");
             }
         }
+        if (temper_line.swt) {
+            temper_line.std.setText(temper.mainData + "°C");
+            temper_line.ora.setText(temper_ora.mainData + "");
+        }
         /** 刷新当前值*/
         ((TextView) root.findViewById(R.id.dcc_ctempr)).setText(temper.mainData + "°C");
         ((TextView) root.findViewById(R.id.dcc_cvalue)).setText(maindata.mainData + "");
     }
     // </editor-fold>
 
+    // <editor-fold desc="参数定标初始化">
+    private void initDateCal(){
+        init_cal_type();
+
+        //初始化参数定标按钮响应
+        root.findViewById(R.id.dcc_dset).setOnClickListener((View view) -> {
+            start_cal();
+        });
+    }
     // <editor-fold desc="初始化定标类型">
     /**
      * 选中的类型
@@ -179,6 +184,7 @@ public class fragment_dev_config_cal extends Fragment {
             /**刷新定标控制行*/
             init_cal_num(selected_type);
         }
+
     }
     // </editor-fold>
 
@@ -213,13 +219,18 @@ public class fragment_dev_config_cal extends Fragment {
         lines.clear();
 
         /** 根据当前定标点数，添加定标控制行*/
-        LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, 45);
+        LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, 40);
         lp.setMargins(0, 10, 0, 0);
         for (int i = 1; i <= num; i++) {
             layout.addView(crate_calline(i), lp);
         }
     }
 
+    private ArrayList<row_line> lines = new ArrayList<>();
+    private class row_line {
+        TextView std, ora;
+        boolean swt = true;
+    }
     /**
      * 初始化定标控制行
      */
@@ -265,62 +276,8 @@ public class fragment_dev_config_cal extends Fragment {
         return row;
     }
 
-    private void InitTemperLine() {
-        /** 清除表格项*/
-        LinearLayout layout = root.findViewById(R.id.dcc_tcal_area);
-        layout.removeAllViews();
-
-
-        /** 新建一行*/
-        LinearLayout row = new LinearLayout(parent);
-        row.setWeightSum(5);
-        row.setOrientation(TableRow.HORIZONTAL);
-
-        //保存line
-        temper_line = new row_line();
-
-        /** 添加名称项目*/
-        LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(0, LinearLayout.LayoutParams.MATCH_PARENT);
-        /** 添加标文字*/
-        lp.weight = 0.5f;
-        row.addView(TableElement.createTextView(parent, "测量温度"), lp);
-
-        lp = new LinearLayout.LayoutParams(0, LinearLayout.LayoutParams.MATCH_PARENT);
-        lp.weight = 1;
-        /** 添加原始值输入框*/
-        temper_line.std = (TextView) TableElement.createInputView(parent, "测量温度", "", null);
-        row.addView(temper_line.std, lp);
-
-        /** 添加原始值标签*/
-        row.addView(TableElement.createTextView(parent, "原始值:"), lp);
-        /** 添加原始值输入框*/
-        lp = new LinearLayout.LayoutParams(0, LinearLayout.LayoutParams.MATCH_PARENT);
-        lp.weight = 2;
-        temper_line.ora = (TextView) TableElement.createInputView(parent, "原始值:", "", null);
-        row.addView(temper_line.ora, lp);
-        /** 添加开关按钮*/
-        lp = new LinearLayout.LayoutParams(0, LinearLayout.LayoutParams.MATCH_PARENT);
-        lp.weight = 0.5f;
-        row.addView(TableElement.createSwitchView(parent, temper_line.swt, (CompoundButton var1, boolean var2) -> {
-            temper_line.swt = var2;
-        }), lp);
-
-        /** 根据当前定标点数，添加定标控制行*/
-        lp = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, 45);
-        lp.setMargins(0, 10, 0, 0);
-        layout.addView(row, lp);
-    }
-
-    private ArrayList<row_line> lines = new ArrayList<>();
-    private row_line temper_line = new row_line();
-
-    private class row_line {
-        TextView std, ora;
-        boolean swt = true;
-    }
     // </editor-fold>
 
-    // <editor-fold desc="开始效准">
     private void start_cal() {
         float[] stddata = new float[this.selected_num];
         float[] oradata = new float[this.selected_num];
@@ -339,6 +296,65 @@ public class fragment_dev_config_cal extends Fragment {
             }
         }
         this.cal_config.CalParameter(this.selected_type, oradata, stddata);
+    }
+    // </editor-fold>
+
+    // <editor-fold desc="温度定标">
+    private row_line temper_line = new row_line();
+
+    private void initTemperCal(){
+
+        InitTemperLine();
+
+        root.findViewById(R.id.dcc_tset).setOnClickListener((View view) -> {
+            start_tcal();
+        });
+    }
+
+    private void InitTemperLine() {
+        /** 清除表格项*/
+        LinearLayout layout = root.findViewById(R.id.dcc_tcal_area);
+        layout.removeAllViews();
+
+
+        /** 新建一行*/
+        LinearLayout row = new LinearLayout(parent);
+        row.setWeightSum(5);
+        row.setOrientation(TableRow.HORIZONTAL);
+
+        //保存line
+        temper_line = new row_line();
+
+        /** 添加名称项目*/
+        LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(0, LinearLayout.LayoutParams.MATCH_PARENT);
+        /** 添加标文字*/
+        lp.weight = 1;
+        row.addView(TableElement.createTextView(parent, "测量温度:"), lp);
+
+        lp = new LinearLayout.LayoutParams(0, LinearLayout.LayoutParams.MATCH_PARENT);
+        lp.weight = 1;
+        /** 添加原始值输入框*/
+        temper_line.std = (TextView) TableElement.createInputView(parent, "测量温度", "", null);
+        row.addView(temper_line.std, lp);
+
+        /** 添加原始值标签*/
+        row.addView(TableElement.createTextView(parent, "原始温度:"), lp);
+        /** 添加原始值输入框*/
+        lp = new LinearLayout.LayoutParams(0, LinearLayout.LayoutParams.MATCH_PARENT);
+        lp.weight = 1.5f;
+        temper_line.ora = (TextView) TableElement.createInputView(parent, "原始值:", "", null);
+        row.addView(temper_line.ora, lp);
+        /** 添加开关按钮*/
+        lp = new LinearLayout.LayoutParams(0, LinearLayout.LayoutParams.MATCH_PARENT);
+        lp.weight = 0.5f;
+        row.addView(TableElement.createSwitchView(parent, temper_line.swt, (CompoundButton var1, boolean var2) -> {
+            temper_line.swt = var2;
+        }), lp);
+
+        /** 根据当前定标点数，添加定标控制行*/
+        lp = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, 40);
+        lp.setMargins(0, 10, 0, 0);
+        layout.addView(row, lp);
     }
 
     private void start_tcal() {

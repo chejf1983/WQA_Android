@@ -48,8 +48,6 @@ public class fragment_control_io extends Fragment {
     private SIOInfo sioInfo;
 
     private void initView() {
-        ((TextView) root.findViewById(R.id.dct_title)).setText("通信设置");
-
         /** 清除表格项*/
         LinearLayout layout = root.findViewById(R.id.dct_list);
         layout.removeAllViews();

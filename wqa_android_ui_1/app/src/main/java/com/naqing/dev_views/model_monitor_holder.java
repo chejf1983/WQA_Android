@@ -2,6 +2,7 @@ package com.naqing.dev_views;
 
 import android.app.Activity;
 import android.graphics.Color;
+import android.graphics.drawable.GradientDrawable;
 import android.os.Handler;
 import android.os.Message;
 import android.view.LayoutInflater;
@@ -47,6 +48,7 @@ public class model_monitor_holder {
     private View config;
     private TextView md_name;
     private TextView md_main_name;
+    private TextView md_main_alarm;
     private TextView md_main_data;
     private TextView md_range;
     private TextView md_temper;
@@ -61,6 +63,7 @@ public class model_monitor_holder {
         config = this.deviceView.findViewById(R.id.m_monitor_config_button);
         index_layout = this.deviceView.findViewById(R.id.m_monitor_index);
         md_main_name = this.deviceView.findViewById(R.id.m_monitor_data_name);
+        md_main_alarm = this.deviceView.findViewById(R.id.m_monitor_alarm);
         md_name = this.deviceView.findViewById(R.id.m_monitor_name);
         md_main_data = this.deviceView.findViewById(R.id.m_monitor_data);
         md_range = this.deviceView.findViewById(R.id.m_monitor_range);
@@ -141,6 +144,10 @@ public class model_monitor_holder {
             //设置温度
             md_temper.setText(lastdata.GetDataElement("温度").mainData + "°C");
         }
+
+        if(lastdata.alarm != 0){
+            ShowAlarm(lastdata.alram_info);
+        }
     }
     // </editor-fold>
 
@@ -152,6 +159,7 @@ public class model_monitor_holder {
             case CONNECT:
                 config.setEnabled(true);
                 md_name.setTextColor(Color.WHITE);
+                ShowAlarm(null);
                 break;
             case ALARM:
                 config.setEnabled(true);
@@ -160,12 +168,27 @@ public class model_monitor_holder {
             case DISCONNECT:
                 config.setEnabled(false);
                 md_name.setTextColor(Color.RED);
+                ShowAlarm("连接中断");
                 Refresh();
                 break;
             case CONFIG:
                 config.setEnabled(false);
                 md_name.setTextColor(Color.GREEN);
                 break;
+        }
+    }
+
+    private void ShowAlarm(String info){
+        if(info == null){
+//            md_main_alarm.setText("");
+//            md_main_alarm.setAlpha(0);
+        }else{
+//            StringBuffer sb = new StringBuffer(info);
+//            if(sb.length() > 10){
+//                sb.insert(10, "\n");
+//            }
+//            md_main_alarm.setText(sb);
+//            md_main_alarm.setAlpha(0.9f);
         }
     }
 }

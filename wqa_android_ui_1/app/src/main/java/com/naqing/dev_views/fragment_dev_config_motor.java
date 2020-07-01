@@ -58,7 +58,6 @@ public class fragment_dev_config_motor extends Fragment {
     private void initView() {
         motor_pars = motor_config.GetMotoPara();
 
-        ((TextView)root.findViewById(R.id.dct_title)).setText("电机控制");
         this.createTable();
 
         /** 刷新列表*/
