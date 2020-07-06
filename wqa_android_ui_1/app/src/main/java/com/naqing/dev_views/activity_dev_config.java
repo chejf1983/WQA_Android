@@ -57,16 +57,8 @@ public class activity_dev_config extends AppCompatActivity {
         /**设置退出按钮*/
         View quit = findViewById(R.id.dev_config_quit);
         quit.setOnClickListener((View view) -> {
-            configbean.Quit();
+            configbean.Close();
             activity_dev_config.this.finish();
-        });
-
-        /**设置退出事件*/
-        configbean.CloseEvent.RegeditListener(new EventListener() {
-            @Override
-            public void recevieEvent(Event event) {
-                activity_dev_config.this.finish();
-            }
         });
     }
 

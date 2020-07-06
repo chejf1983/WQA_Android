@@ -2,13 +2,14 @@ package com.naqing.dev_views;
 
 import android.app.Activity;
 import android.graphics.Color;
-import android.graphics.drawable.GradientDrawable;
 import android.os.Handler;
 import android.os.Message;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+
+import androidx.appcompat.widget.PopupMenu;
 
 import com.naqing.common.Security;
 import com.naqing.common.TableElement;
@@ -48,7 +49,7 @@ public class model_monitor_holder {
     private View config;
     private TextView md_name;
     private TextView md_main_name;
-    private TextView md_main_alarm;
+    private String md_main_alarm;
     private TextView md_main_data;
     private TextView md_range;
     private TextView md_temper;
@@ -63,18 +64,11 @@ public class model_monitor_holder {
         config = this.deviceView.findViewById(R.id.m_monitor_config_button);
         index_layout = this.deviceView.findViewById(R.id.m_monitor_index);
         md_main_name = this.deviceView.findViewById(R.id.m_monitor_data_name);
-        md_main_alarm = this.deviceView.findViewById(R.id.m_monitor_alarm);
         md_name = this.deviceView.findViewById(R.id.m_monitor_name);
         md_main_data = this.deviceView.findViewById(R.id.m_monitor_data);
         md_range = this.deviceView.findViewById(R.id.m_monitor_range);
         md_temper = this.deviceView.findViewById(R.id.m_monitor_temper);
 
-        md_main_name.setOnClickListener((View view) -> {
-            view_indexs[index].setBackgroundColor(Color.GRAY);
-            index = (index + 1) % data_name.length;
-            view_indexs[index].setBackgroundColor(Color.BLACK);
-            Refresh();
-        });
         /** 显示配置界面*/
         config.setOnClickListener((View view) -> {
             Security.CheckPassword(parentActivity, new Handler() {
@@ -95,10 +89,23 @@ public class model_monitor_holder {
             index_layout.addView(view_indexs[i], lp);
         }
         view_indexs[index].setBackgroundColor(Color.BLACK);
+
+        //切换翻页
+        md_main_name.setOnClickListener((View view) -> {
+            view_indexs[index].setBackgroundColor(Color.GRAY);
+            index = (index + 1) % data_name.length;
+            view_indexs[index].setBackgroundColor(Color.BLACK);
+            Refresh();
+        });
+
+        //显示报警信息
+        md_name.setOnClickListener((View view) -> {
+            ShowAlarm();
+        });
     }
     // </editor-fold>
 
-    // <editor-fold desc="刷新界面">
+    // <editor-fold desc="刷新界面数据">
     private SDisplayData lastdata;
 
     public void updateData(SDisplayData data) {
@@ -145,12 +152,13 @@ public class model_monitor_holder {
             md_temper.setText(lastdata.GetDataElement("温度").mainData + "°C");
         }
 
-        if(lastdata.alarm != 0){
-            ShowAlarm(lastdata.alram_info);
+        if (lastdata.alarm != 0) {
+            SetAlarm(lastdata.alram_info);
         }
     }
     // </editor-fold>
 
+    // <editor-fold desc="更新状态">
     private DevControl.ControlState last_state;
 
     public void initState(DevControl.ControlState state) {
@@ -159,7 +167,7 @@ public class model_monitor_holder {
             case CONNECT:
                 config.setEnabled(true);
                 md_name.setTextColor(Color.WHITE);
-                ShowAlarm(null);
+                SetAlarm(null);
                 break;
             case ALARM:
                 config.setEnabled(true);
@@ -168,27 +176,42 @@ public class model_monitor_holder {
             case DISCONNECT:
                 config.setEnabled(false);
                 md_name.setTextColor(Color.RED);
-                ShowAlarm("连接中断");
+                SetAlarm("连接中断");
                 Refresh();
-                break;
             case CONFIG:
                 config.setEnabled(false);
                 md_name.setTextColor(Color.GREEN);
                 break;
         }
     }
+    // </editor-fold>
 
-    private void ShowAlarm(String info){
-        if(info == null){
-//            md_main_alarm.setText("");
-//            md_main_alarm.setAlpha(0);
-        }else{
-//            StringBuffer sb = new StringBuffer(info);
-//            if(sb.length() > 10){
-//                sb.insert(10, "\n");
+    // <editor-fold desc="报警信息">
+    private void SetAlarm(String info) {
+        if (info == null) {
+            md_main_alarm = ("");
+        } else {
+//            int width = 3;
+//            StringBuffer sb = new StringBuffer();
+//            for (int i = 0; i < info.length(); i += width) {
+//                if (info.length() - i > width)
+//                    sb.append(info.substring(i, i + width));
+//                else
+//                    sb.append(info.substring(i));
+//
+//                sb.append("\n");
 //            }
-//            md_main_alarm.setText(sb);
-//            md_main_alarm.setAlpha(0.9f);
+            md_main_alarm = info;
         }
     }
+
+    private void ShowAlarm() {
+        if (this.md_main_alarm.contentEquals("")) return;
+        PopupMenu popupMenu = new PopupMenu(this.parentActivity, this.md_name);
+        popupMenu.getMenuInflater().inflate(R.menu.menu_nqmain, popupMenu.getMenu());
+
+        popupMenu.getMenu().findItem(R.id.action_settings).setTitle(md_main_alarm);
+        popupMenu.show();
+    }
+    // </editor-fold>
 }

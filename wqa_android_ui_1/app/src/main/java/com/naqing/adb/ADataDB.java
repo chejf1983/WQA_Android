@@ -60,6 +60,7 @@ public class ADataDB implements IDataHelper {
         DataRecord record = new DataRecord();
         //读取时间
         record.dev_info = id;
+        record.time = new Date();
         record.time.setTime(set.getLong(0));
         record.names = DataHelper.GetSupportDataName(id.dev_type);
         record.values = new Float[record.names.length];
