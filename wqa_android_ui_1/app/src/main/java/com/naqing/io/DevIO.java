@@ -17,13 +17,13 @@ public class DevIO {
         if(!iokey.contentEquals("NON")) {
             SIOInfo sioInfo = WQAPlatform.GetInstance().GetIOManager().GetIOConfig(DEVIO);
             /**查找IO*/
-            io_instance = AndroidIO.GetInstance().GetComManager().FindIO(sioInfo);
-            /**如果找不到，设置第一个串口为设备口*/
+            io_instance = WQAPlatform.GetInstance().GetIOManager().FindIO(sioInfo);
+            /**如果找不到，设置默认串口*/
             if (io_instance == null) {
-                SetDevConfigIO(AndroidIO.GetInstance().GetComManager().GetAllCOM()[6]);
+                SetDevConfigIO(WQAPlatform.GetInstance().GetIOManager().GetAllIO(SIOInfo.COM)[6]);
             }
         }else{
-            SetDevConfigIO(AndroidIO.GetInstance().GetComManager().GetAllCOM()[6]);
+            SetDevConfigIO(WQAPlatform.GetInstance().GetIOManager().GetAllIO(SIOInfo.COM)[6]);
         }
         io_instance.Close();
         io_instance.Open();

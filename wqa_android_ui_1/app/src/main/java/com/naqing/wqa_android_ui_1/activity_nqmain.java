@@ -21,6 +21,7 @@ import migp.adapter.factory.MIGPDevFactory;
 import nahon.comm.event.Event;
 import nahon.comm.event.EventListener;
 import nahon.comm.faultsystem.LogCenter;
+import wqa.adapter.factory.ModBusDevFactory;
 import wqa.system.WQAPlatform;
 
 public class activity_nqmain extends AppCompatActivity {
@@ -70,6 +71,7 @@ public class activity_nqmain extends AppCompatActivity {
             /**初始化Android串口*/
             AndroidIO.GetInstance().InitIO();
             WQAPlatform.GetInstance().GetManager().ChangeAutoSeachDriver(new MIGPDevFactory());
+//            WQAPlatform.GetInstance().GetManager().ChangeAutoSeachDriver(new ModBusDevFactory());
         } catch (Exception ex) {
             ErrorExecutor.PrintErrorInfo("初始化失败:" + ex.getMessage());
         }

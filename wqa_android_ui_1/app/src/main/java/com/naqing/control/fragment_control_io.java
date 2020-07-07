@@ -19,8 +19,11 @@ import com.naqing.wqa_android_ui_1.R;
 
 import java.util.logging.Level;
 
+import migp.adapter.factory.MIGPDevFactory;
 import nahon.comm.faultsystem.LogCenter;
+import wqa.adapter.factory.ModBusDevFactory;
 import wqa.bill.io.SIOInfo;
+import wqa.dev.intf.IDeviceSearch;
 import wqa.system.WQAPlatform;
 
 
@@ -70,6 +73,15 @@ public class fragment_control_io extends Fragment {
         }));
         AddLine(layout, TableElement.CreateInputViewLine(parent, "搜索最大地址", WQAPlatform.GetInstance().GetManager().GetMaxAutoNum() + "",
                 (View view) -> WQAPlatform.GetInstance().GetManager().SetMaxAutoNum(Integer.parseInt(((TextView) view).getText().toString()))));
+
+        IDeviceSearch iDeviceSearch = WQAPlatform.GetInstance().GetManager().GetAutoSearchDriver();
+        AddLine(layout, TableElement.CreateSelectViewLine(parent, "自动搜索协议",iDeviceSearch == null ? "" :iDeviceSearch.ProType(), new String[]{"MIGP","MODBUS"}, (View view) -> {
+            if(((TextView) view).getText().toString() == "MIGP"){
+                WQAPlatform.GetInstance().GetManager().ChangeAutoSeachDriver(new MIGPDevFactory());
+            }else{
+                WQAPlatform.GetInstance().GetManager().ChangeAutoSeachDriver(new ModBusDevFactory());
+            }
+        }));
     }
 
     private void AddLine(LinearLayout layout, View view) {

@@ -17,48 +17,33 @@ import wqa.system.WQAPlatform;
  */
 public class ComManager implements EventListener {
     private ArrayList<ShareIO> localio = new ArrayList();
-    SerialPortFinder io_finder = new SerialPortFinder();
+//    SerialPortFinder io_finder = new SerialPortFinder();
 
     //刷新IO口
     public void InitIO() throws Exception {
         this.localio.clear();
 
+        //找到所有串口
         for (String com : SerialPortFactory.ListAllCom()) {
             com = com.split(" ")[0];
 //            System.out.println("************************************" + com);
+            //根据串口名称，查看配置
             SIOInfo sioInfo = WQAPlatform.GetInstance().GetIOManager().GetIOConfig(com);
+            //如果没有找到，添加一个默认配置
             if (sioInfo == null) {
                 sioInfo = new SIOInfo("COM", com, "9600");
-                WQAPlatform.GetInstance().GetIOManager().SaveIOConfig(com, sioInfo);
+//                WQAPlatform.GetInstance().GetIOManager().SaveIOConfig(com, sioInfo);
             }
 
+            //查找是否已经注册到IO服务器了
             ShareIO io = WQAPlatform.GetInstance().GetIOManager().FindIO(sioInfo);
+            //如果没有就注册到IO服务器当中
             if (io == null) {
                 io = WQAPlatform.GetInstance().GetIOManager().ADDShareIO(SerialPortFactory.BuildCom(sioInfo));
             }
+            //本地保存缓存
             this.localio.add(io);
         }
-    }
-
-    public ShareIO FindIO(SIOInfo ioinfo) {
-        for (ShareIO io : localio) {
-            if (io.GetConnectInfo().equalto(ioinfo)) {
-                return io;
-            }
-        }
-        return null;
-    }
-
-    public ShareIO[] GetAllCOM() {
-        return localio.toArray(new ShareIO[0]);
-    }
-
-    public String[] GetAllCOMName(){
-        String[] coms = new String[GetAllCOM().length];
-        for(int i = 0; i < coms.length; i++){
-            coms[i] = GetAllCOM()[i].GetConnectInfo().par[0];
-        }
-        return coms;
     }
 
     public void ChangeBandRate(ShareIO io, String bandrate) {
@@ -66,7 +51,7 @@ public class ComManager implements EventListener {
         if (info.iotype.contentEquals(SIOInfo.COM)) {
             info.par[1] = bandrate;
             io.SetConnectInfo(info);
-            WQAPlatform.GetInstance().GetIOManager().SaveIOConfig(info.par[0], info);
+            WQAPlatform.GetInstance().GetIOManager().SaveIOConfig(GetKey(io), info);
         }
     }
 

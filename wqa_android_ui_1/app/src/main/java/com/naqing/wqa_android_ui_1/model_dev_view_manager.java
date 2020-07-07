@@ -98,6 +98,15 @@ public class model_dev_view_manager {
             }
         }
     }
+
+    public model_dev_view GetView(DevControl control){
+        for (model_dev_view view : dev_views) {
+            if (view.control == control) {
+                return view;
+            }
+        }
+        return null;
+    }
     // </editor-fold>
 
     // <editor-fold desc="设备存储">

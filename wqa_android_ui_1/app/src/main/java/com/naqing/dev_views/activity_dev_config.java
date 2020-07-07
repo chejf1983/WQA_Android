@@ -18,46 +18,74 @@ import android.widget.RadioGroup;
 import android.widget.TextView;
 
 import com.naqing.wqa_android_ui_1.R;
+import com.naqing.wqa_android_ui_1.model_dev_view_manager;
 
 import java.util.ArrayList;
 import java.util.logging.Level;
 
-import nahon.comm.event.Event;
-import nahon.comm.event.EventListener;
 import nahon.comm.faultsystem.LogCenter;
+import wqa.control.common.DevControl;
 import wqa.control.config.DevCalConfig;
 import wqa.control.config.DevConfigBean;
 import wqa.control.config.DevConfigTable;
 import wqa.control.config.DevMotorConfig;
+import wqa.system.WQAPlatform;
 
 /**
  * 设备配置界面，主要包括设备信息，参数配置，电机配置，定标界面
- * */
+ */
 public class activity_dev_config extends AppCompatActivity {
 
-    /**设备配置模块*/
-    public static DevConfigBean configbean;
-    public static model_dev_view dev_view;
+    /**
+     * 设备配置模块
+     */
+    public DevConfigBean configbean;
+    public model_dev_view dev_view;
+    public DevControl control;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        String sindex = getIntent().getStringExtra("index");
+        try {
+            int index = Integer.valueOf(sindex);
+            control = WQAPlatform.GetInstance().GetManager().GetAllControls()[index];
+            if (control != null) {
+                configbean = control.GetConfig();
+                if (configbean == null)
+                    finish();
+                else
+                    dev_view = model_dev_view_manager.Instance().GetView(control);
+
+                if (dev_view == null)
+                    finish();
+                else
+                    dev_view.RegisterConfigActivity(activity_dev_config.this);
+            }
+        } catch (Exception ex) {
+            finish();
+        }
+
         setContentView(R.layout.activity_dev_config);
 
         /**设置设备名称*/
-        ((TextView)findViewById(R.id.dev_config_name)).setText(getIntent().getStringExtra("name"));
+        ((TextView) findViewById(R.id.dev_config_name)).setText(control.ToString());
 
         /**初始配置列表*/
         this.initView();
 
         /** 设置消息响应*/
-        configbean.SetMessageImple((String s)->{
+        configbean.SetMessageImple((
+                String s) -> {
             LogCenter.Instance().ShowMessBox(Level.INFO, s);
         });
 
-        /**设置退出按钮*/
+        /**
+         * 设置退出按钮
+         */
         View quit = findViewById(R.id.dev_config_quit);
         quit.setOnClickListener((View view) -> {
-            configbean.Close();
             activity_dev_config.this.finish();
         });
     }
@@ -68,15 +96,26 @@ public class activity_dev_config extends AppCompatActivity {
         return super.onCreateView(name, context, attrs);
     }
 
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        if (configbean != null)
+            configbean.Close();
+        dev_view.RegisterConfigActivity(null);
+    }
+
     // <editor-fold desc="初始化">
-    /**初始化fragement界面*/
+
+    /**
+     * 初始化fragement界面
+     */
     private void initView() {
-        if(configbean == null){
+        if (configbean == null) {
             finish();
         }
 
         /** 创建配置列表*/
-        for(DevConfigTable config_table : configbean.GetBaseDevConfig()){
+        for (DevConfigTable config_table : configbean.GetBaseDevConfig()) {
             initConfigTable(config_table);
         }
 
@@ -95,19 +134,24 @@ public class activity_dev_config extends AppCompatActivity {
     // </editor-fold>
 
     // <editor-fold desc="界面">
-    /**配置fragments列表*/
+    /**
+     * 配置fragments列表
+     */
     ArrayList<Fragment> fragments = new ArrayList();
-    /**初始化通用配置界面*/
-    private void initConfigTable(DevConfigTable config_table){
+
+    /**
+     * 初始化通用配置界面
+     */
+    private void initConfigTable(DevConfigTable config_table) {
         /**创建通用设置fragment*/
         fragment_dev_config_table table = new fragment_dev_config_table(config_table);
         fragments.add(table);
 
         /**设置切换按钮*/
         RadioButton button = initButton(config_table.GetListName());
-        button.setOnCheckedChangeListener((CompoundButton var1, boolean checked)->{
+        button.setOnCheckedChangeListener((CompoundButton var1, boolean checked) -> {
             FragmentTransaction fragmentTransaction = activity_dev_config.this.getSupportFragmentManager().beginTransaction();
-            if(checked) {
+            if (checked) {
                 /**重新设置一下config_table 模块，避免丢失*/
                 table.reset_calconfig(config_table);
                 fragmentTransaction.replace(R.id.fragment_dev_config_area, table).commit();
@@ -115,46 +159,52 @@ public class activity_dev_config extends AppCompatActivity {
         });
 
         /**选中第一个配置模块*/
-        if(fragments.size() == 1){
+        if (fragments.size() == 1) {
             button.setChecked(true);
         }
     }
 
-    /**初始化定标界面*/
-    private void initCalTable(DevCalConfig cal_config){
+    /**
+     * 初始化定标界面
+     */
+    private void initCalTable(DevCalConfig cal_config) {
         RadioButton button = initButton("参数校准");
         fragment_dev_config_cal table = new fragment_dev_config_cal(cal_config);
         fragments.add(table);
-        button.setOnCheckedChangeListener((CompoundButton var1, boolean checked)->{
+        button.setOnCheckedChangeListener((CompoundButton var1, boolean checked) -> {
             FragmentTransaction fragmentTransaction = activity_dev_config.this.getSupportFragmentManager().beginTransaction();
-            if(checked) {
+            if (checked) {
                 table.reset_calconfig(cal_config);
                 fragmentTransaction.replace(R.id.fragment_dev_config_area, table).commit();
             }
         });
     }
 
-    /**初始化电机控制界面*/
-    private void initMotoTable(DevMotorConfig config){
-        if(config == null){
+    /**
+     * 初始化电机控制界面
+     */
+    private void initMotoTable(DevMotorConfig config) {
+        if (config == null) {
             return;
         }
 
         RadioButton button = initButton("电机控制");
         fragment_dev_config_motor table = new fragment_dev_config_motor(config);
         fragments.add(table);
-        button.setOnCheckedChangeListener((CompoundButton var1, boolean checked)->{
+        button.setOnCheckedChangeListener((CompoundButton var1, boolean checked) -> {
             FragmentTransaction fragmentTransaction = activity_dev_config.this.getSupportFragmentManager().beginTransaction();
-            if(checked) {
+            if (checked) {
                 table.reset_calconfig(config);
                 fragmentTransaction.replace(R.id.fragment_dev_config_area, table).commit();
             }
         });
     }
 
-    /**初始化报警信息界面*/
-    private void initAlarm(model_dev_view config){
-        if(config == null){
+    /**
+     * 初始化报警信息界面
+     */
+    private void initAlarm(model_dev_view config) {
+        if (config == null) {
             return;
         }
 
@@ -162,18 +212,20 @@ public class activity_dev_config extends AppCompatActivity {
         fragment_dev_alarm table = new fragment_dev_alarm(config);
         fragments.add(table);
 //        table.ReadAlarm();
-        button.setOnCheckedChangeListener((CompoundButton var1, boolean checked)->{
+        button.setOnCheckedChangeListener((CompoundButton var1, boolean checked) -> {
             FragmentTransaction fragmentTransaction = activity_dev_config.this.getSupportFragmentManager().beginTransaction();
-            if(checked) {
+            if (checked) {
                 table.reset_calconfig(config);
                 fragmentTransaction.replace(R.id.fragment_dev_config_area, table).commit();
             }
         });
     }
 
-    /**初始化定标界面*/
-    private void initCal(model_dev_view config){
-        if(config == null){
+    /**
+     * 初始化定标界面
+     */
+    private void initCal(model_dev_view config) {
+        if (config == null) {
             return;
         }
 
@@ -181,9 +233,9 @@ public class activity_dev_config extends AppCompatActivity {
         fragment_dev_cal_info table = new fragment_dev_cal_info(config);
         fragments.add(table);
 //        table.ReadAlarm();
-        button.setOnCheckedChangeListener((CompoundButton var1, boolean checked)->{
+        button.setOnCheckedChangeListener((CompoundButton var1, boolean checked) -> {
             FragmentTransaction fragmentTransaction = activity_dev_config.this.getSupportFragmentManager().beginTransaction();
-            if(checked) {
+            if (checked) {
                 table.reset_calconfig(config);
                 fragmentTransaction.replace(R.id.fragment_dev_config_area, table).commit();
             }
@@ -192,7 +244,9 @@ public class activity_dev_config extends AppCompatActivity {
 
     // </editor-fold>
 
-    /**初始化列表按钮*/
+    /**
+     * 初始化列表按钮
+     */
     private RadioButton initButton(String name) {
         RadioGroup radioGroup = findViewById(R.id.dev_config_rbgroup);
 //        radioGroup.setWeightSum(8);

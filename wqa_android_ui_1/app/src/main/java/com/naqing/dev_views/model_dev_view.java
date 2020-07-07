@@ -8,7 +8,6 @@ import android.os.Message;
 
 import com.naqing.control.fragment_control_dev;
 import com.naqing.wqa_android_ui_1.fragment_monitor_main;
-import com.naqing.wqa_android_ui_1.model_dev_view_manager;
 
 import java.util.Date;
 import nahon.comm.event.Event;
@@ -74,6 +73,7 @@ public class model_dev_view {
         }
     }
 
+    // <editor-fold desc="注册消息">
     private int STATE = 0x01;
     private int DATA = 0x02;
     //activity 消息
@@ -86,6 +86,12 @@ public class model_dev_view {
                 for (model_monitor_holder holder : monitors) {
                     holder.initState(event.GetEvent());
                 }
+                if(event.GetEvent() == DevControl.ControlState.DISCONNECT){
+                    if(activity_form != null){
+                        activity_form.finish();
+                        activity_form = null;
+                    }
+                }
             }
 
             if (msg.what == DATA) {
@@ -95,9 +101,9 @@ public class model_dev_view {
             }
         }
     };
+    // </editor-fold>
 
-
-    // <editor-fold desc="设置数据显示类型">
+    // <editor-fold desc="刷新显示窗口">
     public model_monitor_holder[] GetMonitors() {
         return this.monitors;
     }
@@ -116,16 +122,25 @@ public class model_dev_view {
     // <editor-fold desc="显示配置界面">
     public void showConfigActivity(Activity parentActivity) {
         /**进入配置状态 */
-        activity_dev_config.configbean = this.control.StartConfig();
-        activity_dev_config.dev_view = this;
-        if(activity_dev_config.configbean == null){
+        if(this.control.GetState() == DevControl.ControlState.CONFIG ||
+                this.control.GetState() == DevControl.ControlState.DISCONNECT ){
             return;
         }
 
-        Intent intent = new Intent(parentActivity, activity_dev_config.class);
-        intent.putExtras(new Bundle());
-        intent.putExtra("name", control.ToString());
-        parentActivity.startActivityForResult(intent, 21);
+        DevControl[] devControls = WQAPlatform.GetInstance().GetManager().GetAllControls();
+        for(int i = 0; i < devControls.length; i++){
+            if(this.control == devControls[i]){
+                Intent intent = new Intent(parentActivity, activity_dev_config.class);
+                intent.putExtras(new Bundle());
+                intent.putExtra("index", i + "");
+                parentActivity.startActivity(intent);
+            }
+        }
+    }
+
+    private activity_dev_config activity_form;
+    public void RegisterConfigActivity(activity_dev_config instance){
+        activity_form = instance;
     }
     // </editor-fold>
 }
